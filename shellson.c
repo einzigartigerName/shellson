@@ -26,6 +26,7 @@ int main(){
         args = parse(buffer);
 
         list_print(args, print_elem);
+        list_finit(args);
     }
  }
 
