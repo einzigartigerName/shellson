@@ -1,4 +1,4 @@
-CFLAGS = -03 -Wall -Wextra
+CFLAGS = -O3 -Wall -Wextra
 
 all: clear shellson
 
