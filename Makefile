@@ -9,4 +9,4 @@ sshellson: shellson.c pparser.c list.c
 	$(CC) $(CFLAGS) -o $@ $^
 
 clear:
-	rm -f shellson shellson_neu
+	rm -f shellson sshellson
