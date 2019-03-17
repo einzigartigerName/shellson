@@ -112,7 +112,7 @@ list_t *parse(char *input){
 
 	// Check for unclosed Quotes
 	if(is_single_quote){ fprintf(stderr, "ERROR: No matching single quote to quote at %d!\n", is_single_quote); exit(EXIT_FAILURE); }
-    if(is_single_quote){ fprintf(stderr, "ERROR: No matching double quote to quote at %d!\n", is_double_quote); exit(EXIT_FAILURE); }
+    if(is_double_quote){ fprintf(stderr, "ERROR: No matching double quote to quote at %d!\n", is_double_quote); exit(EXIT_FAILURE); }
 
 	free(tmp_arg);
 
