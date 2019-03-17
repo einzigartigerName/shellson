@@ -1,12 +1,9 @@
 CFLAGS = -O3 -Wall -Wextra
 
-all: clear shellson sshellson
+all: clear shellson
 
 shellson: shellson.c parser.c list.c
 	$(CC) $(CFLAGS) -o $@ $^
 
-sshellson: shellson.c pparser.c list.c
-	$(CC) $(CFLAGS) -o $@ $^
-
-clear:
-	rm -f shellson sshellson
+clean:
+	rm -f shellson
