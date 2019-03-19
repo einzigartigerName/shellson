@@ -8,7 +8,7 @@
 
 #define BUFFER_SIZE 1024
 
-void print_elem(char *input);
+void print_elem(void *input);
 
 int main(){
     char *buffer = (char *) malloc(BUFFER_SIZE);    // Inputbuffer for read from stdin
@@ -30,6 +30,6 @@ int main(){
     }
  }
 
- void print_elem(char *input){
-     fprintf(stdout, "%s", input);
+ void print_elem(void *input){
+     fprintf(stdout, "%s", (char*) input);
  }
