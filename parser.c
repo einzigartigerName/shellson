@@ -36,9 +36,9 @@ void add_to_list(list_t *li, char *data, size_t *len){
     list_append(li, data);
 }
 
-// Resetting the given pointer
+// Resetting the given string-pointer
 char* reset(char *pointer){
-    pointer = realloc(pointer, (size_t) 1);
+    pointer = malloc(1);
     check_malloc(pointer);
 	*pointer = '\0';
 	return pointer;
@@ -101,12 +101,16 @@ list_t *parse(char *input){
                     is_single_quote = i + 1;
                 }
                 break;
+            
+            case '\n':
+                goto end_of_loop;
 
             default:
                 tmp_arg = append_char(tmp_arg, c, false, &len);
                 break;
         }
     }
+    end_of_loop:;
 	// Add last word
 	add_to_list(args, tmp_arg, &len);
 

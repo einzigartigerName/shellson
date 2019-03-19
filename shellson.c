@@ -31,5 +31,5 @@ int main(){
  }
 
  void print_elem(void *input){
-     fprintf(stdout, "%s", (char*) input);
+     fprintf(stdout, "%s\n", (char *) input);
  }
