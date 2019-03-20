@@ -7,7 +7,7 @@
 /*
 * @return list_t* - pointer to created list
 */
-list_t *list_init (){
+list_t *linit (){
     list_t *li = (list_t*) malloc(sizeof(list_t));
     if (li == NULL)
         ERROR("Can not malloc list.");
@@ -25,7 +25,7 @@ list_t *list_init (){
 * @param void* - data to insert
 * @return struct list_elem* - inserted list-element
 */
-struct list_elem *list_insert (list_t *list, void *data){
+struct list_elem *linsert (list_t *list, void *data){
     // Create list_elem
     struct list_elem *in = (struct list_elem*) malloc(sizeof(struct list_elem));
     if(in == NULL)
@@ -45,12 +45,13 @@ struct list_elem *list_insert (list_t *list, void *data){
     return in;
 }
 
+
 /*
 * @param list_t* - list
 * @param void* - data to append
 * @return struct list_elem* - inserted list-element
 */
-struct list_elem *list_append (list_t *list, void *data){
+struct list_elem *lappend (list_t *list, void *data){
      // Create list_elem
     struct list_elem *app = (struct list_elem*) malloc(sizeof(struct list_elem));
     if(app == NULL)
@@ -72,13 +73,14 @@ struct list_elem *list_append (list_t *list, void *data){
     return app;
 }
 
+
 /*
 * @param list_t* - list
 * @param void* - data to find
 * @param int (*cmp_elem) - methode to compare the data
 * @return struct list_elem* - found list-element (NULL if no matching element was found)
 */
-struct list_elem *list_find (list_t *list, void *data, int (*cmp_elem) (const void *, const void *)){
+struct list_elem *lfind (list_t *list, void *data, int (*cmp_elem) (const void *, const void *)){
     struct list_elem *current = list->first;
 
     while(current != NULL){
@@ -97,23 +99,34 @@ struct list_elem *list_find (list_t *list, void *data, int (*cmp_elem) (const vo
 * @param list_elem
 * @return int: success -> 0; failure -> -1
 */
-int list_remove (list_t *list, struct list_elem *elem){
-    if (list->first == NULL || elem == NULL)
-        return -1;
+int lrm (list_t *list, struct list_elem *elem){
+    // list is empty
+    if (list->first == NULL)
+        ERROR("List empty. Nothing to remove.");
+
+    // element is NULL
+    if (elem == NULL)
+        ERROR("Element to be removed mustn't be NULL.");
 
     struct list_elem *current = list->first;
 
     // check first element
-    if(current == elem){
-        list->first = current->next;
-        free(elem);
-        list->size -= 1;
+    if(list->first == elem){
+        lrmf(list);
         return 0;
     }
+
+    // check last element
+    if(list->last == elem){
+        lrml(list);
+        return 0;
+    }
+
     // Check in rest of list
     while(current->next != NULL){
         if(current->next == elem){
             current->next = elem->next;
+            free(elem->data);
             free(elem);
             list->size -= 1;
             return 0;
@@ -123,10 +136,84 @@ int list_remove (list_t *list, struct list_elem *elem){
 
     return -1;
 }
+
+
+/*
+* @param list_t
+*/
+void lrmf (list_t *list){
+    // list is empty
+    if (list->first == NULL)
+        ERROR("List empty. Nothing to remove.");
+
+    // just one element in list
+    if (list->size == 1){
+        // clear list
+        struct list_elem *elem = list->first;
+        list->first = NULL;
+        list->last = NULL;
+        list->size = 0;
+
+        // free data and element
+        free(elem->data);
+        free(elem);
+
+        return;
+    }
+
+    // rm first element
+    struct list_elem *first = list->first;
+    list->first = first->next;
+    list->size -= 1;
+
+    // free element and data
+    free(first->data);
+    free(first);
+}
+
+
+/*
+* @param list_t
+*/
+void lrml (list_t *list){
+    // list is empty
+    if (list->first == NULL)
+        ERROR("List empty. Nothing to remove.");
+
+    // just one element in list
+    if (list->size == 1){
+        // clear list
+        struct list_elem *elem = list->first;
+        list->first = NULL;
+        list->last = NULL;
+        list->size = 0;
+
+        // free data and element
+        free(elem->data);
+        free(elem);
+
+        return;
+    }
+
+    struct list_elem *last = list->last;
+    struct list_elem *current = list->first;
+
+    while(current->next != last)
+        current = current->next;
+
+    // rm last element
+    current->next = NULL;
+
+    // free element and data
+    free(last->data);
+    free(last);
+}
+
+
 /*
 * @param list_t* - list
 */
-void list_rev(list_t *list){
+void lrev(list_t *list){
     // zero or One Element
     if (list->first == NULL || list->first == list->last)
         return;
@@ -144,11 +231,12 @@ void list_rev(list_t *list){
     list->first = prev;
 }
 
+
 /*
 * @param list_t* - list
 * @param void (*print_elem) - methode to print data in list
 */
-void list_print (list_t *list, void (*print_elem) (void *)){
+void lprint (list_t *list, void (*print_elem) (void *)){
     struct list_elem *current = list->first;
     while(current != NULL){
         print_elem(current->data);
@@ -156,10 +244,11 @@ void list_print (list_t *list, void (*print_elem) (void *)){
     }
 }
 
+
 /*
 * @param list_t* - list
 */
-void list_finit (list_t *list){
+void lfinit (list_t *list){
     if(list->first == NULL){
         free(list);
         return;
@@ -169,9 +258,11 @@ void list_finit (list_t *list){
     while (list->first != list->last) {
         current = list->first;
         list->first = current->next;
+        free(current->data);
         free(current);
     }
 
+    free(list->first->data);
     free(list->first);
     free(list);
 }

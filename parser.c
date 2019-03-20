@@ -33,7 +33,7 @@ char* append_char(char* str, char c, bool termiante, size_t *str_len){
 // Adds string to list
 void add_to_list(list_t *li, char *data, size_t *len){
     append_char(data, '\0', true, len);
-    list_append(li, data);
+    lappend(li, data);
 }
 
 // Resetting the given string-pointer
@@ -47,7 +47,7 @@ char* reset(char *pointer){
 // Parse the string and returns list with arguments
 list_t *parse(char *input){
     // Output list with all args
-    list_t *args = list_init();
+    list_t *args = linit();
     check_malloc(args);
 
     // flags for parsing
