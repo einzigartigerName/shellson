@@ -16,14 +16,8 @@ char* append_char(char *str, char c){
 
 char* reset(){
     char *pointer = malloc(1);
-    pointer = '\0';
+    memset(pointer, 0, 1);
     return pointer;
-}
-
-void list_append(list_t *li, char *data){
-    char *tmp = NULL;
-    asprintf(&tmp, "%s", (data + 6));
-    lappend(li, tmp);
 }
 
 list_t* parse(char *input){
@@ -41,17 +35,18 @@ list_t* parse(char *input){
         switch(c){
             // single quote
             case '\'':
-                if(is_double_quote){
-                    tmp = append_char(tmp, c);
-                } else if(is_backslash){
+                if(is_backslash){
                     tmp = append_char(tmp, c);
                     is_backslash = 0;
+                } else if(is_double_quote){
+                    tmp = append_char(tmp, c);
                 } else if(is_single_quote){
-                    list_append(args, tmp);
+                    lappend(args, tmp);
                     tmp = reset(tmp);
                     is_single_quote = 0;
                 } else{
                     tmp = reset();
+                    is_single_quote = i + 1;
                 }
             break;
 
@@ -63,11 +58,12 @@ list_t* parse(char *input){
                 } else if(is_single_quote){
                     tmp = append_char(tmp, c);
                 } else if(is_double_quote){
-                    list_append(args, tmp);
+                    lappend(args, tmp);
                     tmp = reset();
                     is_double_quote = 0;
                 } else{
                     tmp = reset();
+                    is_double_quote = i + 1;
                 }
             break;
             // backslash
@@ -76,7 +72,7 @@ list_t* parse(char *input){
                     tmp = append_char(tmp, c);
                     is_backslash = 0;
                 } else{
-                    tmp = reset();
+                    is_backslash = i + 1;
                 }
             break;
             // end of line - treat like space
@@ -89,8 +85,10 @@ list_t* parse(char *input){
                     tmp = append_char(tmp, c);
                     is_backslash = 0;
                 } else{
-                    list_append(args, tmp);
-                    tmp = reset();
+                    if(strcmp(tmp, "") != 0){
+                        lappend(args, tmp);
+                        tmp = reset();
+                    }
                 }
             break;
 
