@@ -1,5 +1,5 @@
 # shellson
-This (will) be a simple implementation of an Unix-Shell written in C.
+This is/will be a simple implementation of an Unix-Shell written in C.
 
 Only capable of executing single commands.
 
