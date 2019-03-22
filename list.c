@@ -75,6 +75,57 @@ struct list_elem *lappend (list_t *list, void *data){
 
 
 /*
+* @param list_t* -list
+* @param size_t - index
+* @return struct list_elem - found element
+*/
+struct list_elem *lget(list_t *list, size_t index){
+    if (index > list->size - 1)
+        ERROR("Index out of Bounds!");
+
+    if(index == 0)
+        return list->first;
+
+    if(index == list->size - 1)
+        return list->last;
+
+    struct list_elem *current = list->first;
+    for(size_t i = 0; i < index; i++)
+        current = current->next;
+
+    return current;
+}
+
+
+/*
+* @param list_t* - list
+* @param size_t - index
+* @param void* - data
+*/
+void lput(list_t *list, size_t index, void *data){
+    if (index > list->size - 1)
+        ERROR("Index out of Bounds!");
+
+    if(index == 0){
+        free(list->first->data);
+        list->first->data = data;
+    }
+
+    if(index == list->size - 1){
+        free(list->last->data);
+        list->last->data = data;        
+    }
+
+    struct list_elem *current = list->first;
+    for(size_t i = 0; i < index; i++)
+        current = current->next;
+    
+    free(current->data);
+    current->data = data;
+}
+
+
+/*
 * @param list_t* - list
 * @param void* - data to find
 * @param int (*cmp_elem) - methode to compare the data
@@ -95,7 +146,7 @@ struct list_elem *lfind (list_t *list, void *data, int (*cmp_elem) (const void *
 
 
 /*
-* @param list_t
+* @param list_t* - list
 * @param list_elem
 * @return int: success -> 0; failure -> -1
 */
@@ -139,7 +190,7 @@ int lrm (list_t *list, struct list_elem *elem){
 
 
 /*
-* @param list_t
+* @param list_t* - list
 */
 void lrmf (list_t *list){
     // list is empty
@@ -173,7 +224,7 @@ void lrmf (list_t *list){
 
 
 /*
-* @param list_t
+* @param list_t* - list
 */
 void lrml (list_t *list){
     // list is empty

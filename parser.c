@@ -30,6 +30,10 @@ list_t* parse(char *input){
     char *tmp = reset();
 
     int input_len = strlen(input);
+    // Check for empty input
+    if(input_len == 1){
+        return NULL;
+    }
     for(int i = 0; i < input_len; i++){
         char c = *(input + i);
         switch(c){
