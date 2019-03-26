@@ -1,5 +1,5 @@
 # shellson
-This (will) be a simple implementation of an Unix-Shell written in C.
+This is/will be a simple implementation of an Unix-Shell written in C.
 
 Only capable of executing single commands.
 
@@ -10,6 +10,8 @@ git clone https://github.com/einzigartigername/shellson
 cd shellson/
 make
 ```
+You will get two warnigs about unused parameters `argc` and `argv` in `main`, just ignore them, they do not matter.
+
 To start simply execute: `path/to/shellson`\
 or if you have installed it:`shellson`.
 ### Install

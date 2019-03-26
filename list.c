@@ -26,6 +26,9 @@ list_t *linit (){
 * @return struct list_elem* - inserted list-element
 */
 struct list_elem *linsert (list_t *list, void *data){
+    if(list == NULL)
+        return NULL;
+
     // Create list_elem
     struct list_elem *in = (struct list_elem*) malloc(sizeof(struct list_elem));
     if(in == NULL)
@@ -52,6 +55,9 @@ struct list_elem *linsert (list_t *list, void *data){
 * @return struct list_elem* - inserted list-element
 */
 struct list_elem *lappend (list_t *list, void *data){
+    if(list == NULL)
+        return NULL;
+
      // Create list_elem
     struct list_elem *app = (struct list_elem*) malloc(sizeof(struct list_elem));
     if(app == NULL)
@@ -73,6 +79,44 @@ struct list_elem *lappend (list_t *list, void *data){
     return app;
 }
 
+/*
+* @param list_t* - destination
+* @param list_t* - list to append to destination
+*/
+void lconcat(list_t *dest, list_t *list){
+    if(dest == NULL){
+        dest = list;
+        return;
+    }
+
+    if(list == NULL)
+        return;
+
+    dest->last->next = list->first;
+    dest->size += list->size;
+}
+
+
+/*
+* @param list_t* - list to be copied
+* @param cpy_data - method that handles data copy
+* @return list_t* - copy of list
+*/
+list_t *lcpy(list_t *list, cpy_data cpy){
+    if(list == NULL)
+        return NULL;
+
+    list_t *list_cpy = linit();
+    struct list_elem *current = list->first;
+    while(current != NULL){
+        void *cpydata = cpy(current->data);
+        lappend(list_cpy, cpydata);
+        current = current->next;
+    }
+
+    return list_cpy;
+}
+
 
 /*
 * @param list_t* -list
@@ -80,6 +124,9 @@ struct list_elem *lappend (list_t *list, void *data){
 * @return struct list_elem - found element
 */
 struct list_elem *lget(list_t *list, size_t index){
+    if(list == NULL)
+        return NULL;
+
     if (index > list->size - 1)
         ERROR("Index out of Bounds!");
 
@@ -103,6 +150,9 @@ struct list_elem *lget(list_t *list, size_t index){
 * @param void* - data
 */
 void lput(list_t *list, size_t index, void *data){
+    if(list == NULL)
+        return;
+
     if (index > list->size - 1)
         ERROR("Index out of Bounds!");
 
@@ -128,14 +178,17 @@ void lput(list_t *list, size_t index, void *data){
 /*
 * @param list_t* - list
 * @param void* - data to find
-* @param int (*cmp_elem) - methode to compare the data
+* @param cmp_elem - methode to compare the data
 * @return struct list_elem* - found list-element (NULL if no matching element was found)
 */
-struct list_elem *lfind (list_t *list, void *data, int (*cmp_elem) (const void *, const void *)){
+struct list_elem *lfind (list_t *list, void *data, cmp_elem cmp){
+    if(list == NULL)
+        return NULL;
+
     struct list_elem *current = list->first;
 
     while(current != NULL){
-        if(cmp_elem(current->data, data) == 0)
+        if(cmp(current->data, data) == 0)
             return current;
 
         current = current->next;
@@ -151,6 +204,9 @@ struct list_elem *lfind (list_t *list, void *data, int (*cmp_elem) (const void *
 * @return int: success -> 0; failure -> -1
 */
 int lrm (list_t *list, struct list_elem *elem){
+    if(list == NULL)
+        return -1;
+
     // list is empty
     if (list->first == NULL)
         ERROR("List empty. Nothing to remove.");
@@ -193,6 +249,9 @@ int lrm (list_t *list, struct list_elem *elem){
 * @param list_t* - list
 */
 void lrmf (list_t *list){
+    if(list == NULL)
+        return;
+
     // list is empty
     if (list->first == NULL)
         ERROR("List empty. Nothing to remove.");
@@ -227,6 +286,9 @@ void lrmf (list_t *list){
 * @param list_t* - list
 */
 void lrml (list_t *list){
+    if(list == NULL)
+        return;
+
     // list is empty
     if (list->first == NULL)
         ERROR("List empty. Nothing to remove.");
@@ -265,6 +327,9 @@ void lrml (list_t *list){
 * @param list_t* - list
 */
 void lrev(list_t *list){
+    if(list == NULL)
+        return;
+
     // zero or One Element
     if (list->first == NULL || list->first == list->last)
         return;
@@ -285,12 +350,15 @@ void lrev(list_t *list){
 
 /*
 * @param list_t* - list
-* @param void (*print_elem) - methode to print data in list
+* @param print_elem - methode to print data in list
 */
-void lprint (list_t *list, void (*print_elem) (void *)){
+void lprint (list_t *list, print_elem print){
+    if(list == NULL)
+        return;
+
     struct list_elem *current = list->first;
     while(current != NULL){
-        print_elem(current->data);
+        print(current->data);
         current = current->next;
     }
 }
@@ -300,6 +368,9 @@ void lprint (list_t *list, void (*print_elem) (void *)){
 * @param list_t* - list
 */
 void lfinit (list_t *list){
+    if(list == NULL)
+        return;
+
     if(list->first == NULL){
         free(list);
         return;
