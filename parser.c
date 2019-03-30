@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include <ctype.h>
 
 #include "parser.h"
 
@@ -14,13 +15,20 @@ char* append_char(char *str, char c){
     return result;
 }
 
+char* append_str(char *str, char *append){
+    char *result = NULL;
+    asprintf(&result, "%s%s", str, append);
+    free(str);
+    return result;
+}
+
 char* reset(){
     char *pointer = malloc(1);
     memset(pointer, 0, 1);
     return pointer;
 }
 
-list_t* parse(char *input){
+list_t* parse_input(char *input){
     list_t *args = linit();
 
     int is_single_quote = 0;
@@ -97,7 +105,9 @@ list_t* parse(char *input){
             break;
 
             // default
-            default: 
+            default:
+                if(is_backslash)
+                    tmp = append_char(tmp, '\\');
                 tmp = append_char(tmp, c);
             break;
         }
@@ -108,4 +118,81 @@ list_t* parse(char *input){
     if(is_double_quote){ printf("ERROR: missing matching \" to %d.\n", is_double_quote); lfinit(args); return NULL; }
 
     return args;
+}
+
+char* parse_prompt(char *input, char *user, char *host){
+    list_t *lexed = parse_input(input);
+    if(lexed == NULL || lexed->size != 3){
+        lfinit(lexed);
+        return ">>";
+    }
+
+    if(strcmp(lexed->first->data, "PROMPT") != 0){
+        lfinit(lexed);
+        return ">>";
+    }
+    
+    if(strcmp(lget(lexed, 1)->data, "=") != 0){
+        lfinit(lexed);
+        return ">>";
+    }
+
+    // process promt-var
+    int is_percent = 0;     // Flag
+    char *tmp = reset();
+
+    char *prompt_var = lexed->last->data;
+    for(int i = 0; i < (int) strlen(prompt_var); i++){
+        char c = *(prompt_var + i);
+        switch(c){
+            // percent
+            case '%':
+                if(is_percent){
+                    tmp = append_char(tmp, '%');
+                    is_percent = 0;
+                } else{
+                    is_percent = i + 1;
+                }
+            break;
+            // user
+            case 'u':
+                if(is_percent){
+                    tmp = append_str(tmp, user);
+                    is_percent = 0;
+                } else{
+                    tmp = append_char(tmp, c);
+                }
+            break;
+            // host
+            case 'h':
+                if(is_percent){
+                    tmp = append_str(tmp, host);
+                    is_percent = 0;
+                } else{
+                    tmp = append_char(tmp, c);
+                }
+            break;
+            // default
+            default:
+                is_percent = 0;
+                tmp = append_char(tmp, c);
+            break;
+        }
+    }
+
+
+
+    if(is_percent){
+        free(tmp);
+        lfinit(lexed);
+        return ">>";
+    }
+
+    lfinit(lexed);
+    return tmp;
+}
+
+// ZSH/Bash compatible
+alias_t* parse_alias(char *input){ 
+    return NULL;
 }
