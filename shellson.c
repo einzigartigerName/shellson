@@ -64,7 +64,7 @@ int main(int argc, char *argv[], char *envp[]){
     if (fd_config == NULL) {
         // Create config and write std-prompt
         fd_config = fopen(config_file_path, "wb");
-        fprintf(fd_config, "PROMT = \"%%u@%%h >>\"\n");
+        fprintf(fd_config, "PROMT = \"%%u@%%h$\"\n");
         fclose(fd_config);
     } else {
         // Read line by line and parse
