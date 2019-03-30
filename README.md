@@ -37,5 +37,5 @@ make install
 
 ### Uninstall
 ```
-sudo make uninstall
+make uninstall
 ```
