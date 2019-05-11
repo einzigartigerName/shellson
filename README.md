@@ -27,7 +27,7 @@ You will get two warnigs about unused parameters `argc` and `argv` in `main`, ju
 To start simply execute: `path/to/shellson`\
 or if you have installed it:`shellson`.
 ### Install
-if you are crazy and plant to use it frequenttly, you can install it via
+if you are crazy and plan to use it frequenttly, you can install it via
 ```
 make install
 ```
